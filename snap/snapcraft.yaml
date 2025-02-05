@@ -1,0 +1,44 @@
+name: retro-aim-server
+title: retro-aim-server
+summary: Retro AIM Server is an open-source instant messaging server
+description: |
+  Retro AIM Server is an open-source instant messaging server that makes classic AIM and ICQ clients work again.
+  This project is an independent, open-source initiative and is not affiliated with, endorsed by, or associated with AOL or Yahoo! Inc. This project is entirely non-commercial and does not generate any revenue or accept donations.
+adopt-info: retro-aim-server
+license: MIT
+base: core24
+grade: stable
+confinement: strict
+
+platforms:
+  amd64:
+    build-on: [amd64]
+    build-for: [amd64]
+  arm64:
+    build-on: [arm64]
+    build-for: [arm64]
+    
+apps:
+  retro-aim-server:
+    command: run_dev.sh
+    plugs:
+      - network
+      - network-bind    
+    
+parts:
+  retro-aim-server:
+    source: https://github.com/mk6i/retro-aim-server
+    source-type: git
+    plugin: go
+    build-snaps:
+      - go 
+    stage-snaps:
+      - go
+      
+    override-pull: |
+      craftctl default
+      craftctl set version="$(git describe --tags | sed 's/^v//' | cut -d "-" -f1)"
+
+  publish:
+    plugin: dump
+    source: scripts            
